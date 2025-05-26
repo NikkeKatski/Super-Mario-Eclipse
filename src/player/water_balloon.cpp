@@ -45,7 +45,12 @@ BETTER_SMS_FOR_CALLBACK void initializeWaterBalloons(TMario *player) {
     }
 }
 
+
+extern Settings::SwitchSetting gKillSetting;
 BETTER_SMS_FOR_CALLBACK void createWaterBalloonAndThrow(TMario *player, bool isMario) {
+    if (gKillSetting.getBool() == false && SME::TGlobals::getCharacterIDFromPlayer(player) != SME::CharacterID::PIANTISSIMO)
+        return;
+
     if (gpMarDirector->mCurState != 4 || !isMario)
         return;
 

@@ -13,6 +13,9 @@ Settings::SwitchSetting gLivesSetting("Infinite Lives", &sLivesValue);
 static bool sMovieValue = false;
 Settings::SwitchSetting gSkipMovieSetting("Skippable Movies", &sMovieValue);
 
+static bool sKillYourself = true;
+Settings::SwitchSetting gKillSetting("Mario & Luigi Water Balloons", &sKillYourself);
+
 Settings::SettingsGroup gSettingsGroup(1, 1, Settings::Priority::GAME);
 
 bool BugsExploitsSetting::sIsUnlocked = false;

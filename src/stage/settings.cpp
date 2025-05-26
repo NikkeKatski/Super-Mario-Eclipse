@@ -200,7 +200,7 @@ private:
 };
 
 static Settings::SettingsGroup sCreditsGroup(1, 0, Settings::Priority::GAME);
-static BetterSMS::ModuleInfo sModuleInfo("Super Mario Eclipse Credits", 1, 0, &sCreditsGroup);
+static BetterSMS::ModuleInfo sModuleInfo("Super Mario Eclipse+ Credits", 1, 0, &sCreditsGroup);
 
 static MarioBrosCreditSetting sMarioBrosCreditSetting;
 static DirectorCreditSetting sDirectorCreditSetting;
@@ -228,14 +228,14 @@ void initDemoCredits() {
     BetterSMS::registerModule(sModuleInfo);
 }
 
-bool isGameCompletedPrior() { return gBugsSetting.isUnlocked(); }
+bool isGameCompletedPrior() { return true; } //gBugsSetting.isUnlocked()
 
 void lockModuleSettings(TApplication *app) {
     optional<ModuleInfo> engine_module   = BetterSMS::getModuleInfo("Better Sunshine Engine");
     optional<ModuleInfo> movement_module = BetterSMS::getModuleInfo("Better Sunshine Moveset");
 
     SMS_ASSERT(movement_module,
-               "Super Mario Eclipse requires the Better Sunshine Movement module to be present and "
+               "Super Mario Eclipse+ requires the Better Sunshine Movement module to be present and "
                "loaded. Please restore \"BetterSunshineMovement.kxe\" to \"./Kuribo!/Mods/\"!");
 
     Settings::SettingsGroup *engine_settings = engine_module->mSettings;

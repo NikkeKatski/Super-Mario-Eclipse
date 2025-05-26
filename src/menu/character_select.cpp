@@ -496,7 +496,7 @@ BETTER_SMS_FOR_CALLBACK bool directCharacterSelectMenu(TApplication *app) {
 
 extern bool gHadLuigiBefore;
 extern bool gHadPiantissimoBefore;
-static bool s_unlock_played        = false;
+static bool s_unlock_played        = true; //test
 static bool s_shine_select_waiting = false;
 static u8 s_last_context           = 0;
 
@@ -548,7 +548,7 @@ static int flagCharacterSelectMenu(u8 state) {
     bool has_luigi       = TFlagManager::smInstance->getBool(0x30018);
     bool has_piantissimo = TFlagManager::smInstance->getBool(0x30019);
     if (!has_luigi && !has_piantissimo) {
-        return state;
+        //return state;
     }
 
     TGameSequence &next_scene = gpApplication.mNextScene;
@@ -558,6 +558,7 @@ static int flagCharacterSelectMenu(u8 state) {
     sMario       = true;
     sLuigi       = has_luigi;
     sPiantissimo = has_piantissimo;
+    sShadowMario = true;
 
     // Intro stage
     if (next_scene.mAreaID == SME::STAGE_PEACH_CASTLE && next_scene.mEpisodeID <= 4) {
@@ -640,14 +641,14 @@ static int flagCharacterSelectMenu(u8 state) {
     }
 
     if (next_scene.mAreaID == TGameSequence::AREA_COROEX6) {
-        sLuigi       = false;
-        sPiantissimo = false;
+        //sLuigi       = false;
+        //sPiantissimo = false;
     }
 
     // Ertoruption
     if (next_scene.mAreaID == SME::STAGE_ERTO) {
         if (next_scene.mEpisodeID == 6) {
-            sLuigi       = false;
+            //sLuigi       = false;
             sPiantissimo = false;
         }
     }

@@ -34,13 +34,57 @@
 #include "object/water_balloon.hxx"
 #include "object/water_mine.hxx"
 #include "p_settings.hxx"
+#include "globals.hxx"
 
 extern BugsExploitsSetting gBugsSetting;
 extern MirrorModeFlag gMirrorModeSetting;
 extern DarknessSetting gDarknessSetting;
 extern Settings::SwitchSetting gLivesSetting;
 extern Settings::SwitchSetting gSkipMovieSetting;
+extern Settings::SwitchSetting gKillSetting;
 extern SpeedrunSetting gSpeedrunSetting;
+
+
+// EVIL CODING SECTION
+u8 elemGetVoiceStatus(TMario *player) {
+    u8 mVoice;
+    bool bYoshi = player->onYoshi();
+    u8 voiceID;
+    PowerPC::writeU32((u32 *)0x800137b8, 0x3b660000);
+
+    if (bYoshi == 0) {
+        mVoice = player->_388;
+        if (mVoice == 2) {
+            voiceID = 6;
+        } else if (mVoice == 1) {
+            voiceID = 2;
+        } else {
+            voiceID = 0;
+            if (SME::TGlobals::getCharacterIDFromPlayer(player) == SME::CharacterID::SHADOW_MARIO) {
+                PowerPC::writeU32((u32 *)0x800137b8, 0x3b600002);
+            }
+        }
+    } else {
+        voiceID = 1;
+    }
+    voiceID = mVoice;
+    return voiceID;
+}
+
+void elemStartVoice(TMario *player, u32 param_1) {
+    bool iVar1;
+    u8 VoiceID;
+    iVar1 = player->onYoshi();
+    if (iVar1 == 0) {
+        VoiceID = elemGetVoiceStatus(player);
+        gpMSound->startMarioVoice(param_1, player->mHealth, VoiceID);
+    }
+    return;
+}
+SMS_PATCH_B(0x8028537c, elemStartVoice);
+
+
+
 
 // Application
 extern bool directCharacterSelectMenu(TApplication *app);
@@ -142,7 +186,7 @@ extern void stopSpeedrunTimerOnStageExit(TApplication *app);
 extern void updateSpeedrunTimer(TApplication *app);
 extern void renderSpeedrunTimer(TApplication *app, const J2DOrthoGraph *graph);
 
-static BetterSMS::ModuleInfo sModuleInfo("Super Mario Eclipse", 1, 0, &gSettingsGroup);
+static BetterSMS::ModuleInfo sModuleInfo("Super Mario Eclipse+", 1, 0, &gSettingsGroup);
 
 extern void initDemoCredits();
 
@@ -153,6 +197,7 @@ static void initModule() {
     gSettingsGroup.addSetting(&gTutorialSetting);
     gSettingsGroup.addSetting(&gMirrorModeSetting);
     gSettingsGroup.addSetting(&gLivesSetting);
+    gSettingsGroup.addSetting(&gKillSetting);
     gSettingsGroup.addSetting(&gDarknessSetting);
     gSettingsGroup.addSetting(&gSkipMovieSetting);
     gSettingsGroup.addSetting(&gSpeedrunSetting);
@@ -305,7 +350,7 @@ static void initModule() {
 }
 
 // Definition block
-KURIBO_MODULE_BEGIN("Super Mario Eclipse", "JoshuaMK", SUPER_MARIO_ECLIPSE_VERSION) {
+KURIBO_MODULE_BEGIN("Super Mario Eclipse+", "JoshuaMK", SUPER_MARIO_ECLIPSE_VERSION) {
     // Set the load and unload callbacks to our registration functions
     KURIBO_EXECUTE_ON_LOAD { initModule(); }
 }

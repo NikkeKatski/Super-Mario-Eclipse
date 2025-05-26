@@ -121,36 +121,26 @@ class DarknessSetting final : public Settings::IntSetting {
 public:
     enum Kind { REGULAR, ECLIPSED, VANILLA };
 
-    DarknessSetting() : IntSetting("Darkness", &mDarknessValue) { mValueRange = {0, 2, 1};
+    DarknessSetting() : IntSetting("Darkness+", &mDarknessValue) { mValueRange = {0, 2, 1};
     }
     ~DarknessSetting() override {}
 
     void getValueName(char *dst) const override {
         switch (getInt()) {
         case Kind::REGULAR:
-            strncpy(dst, "REGULAR", 9);
+            strncpy(dst, "REGULAR+", 9 + 1);
             break;
         case Kind::ECLIPSED:
-            strncpy(dst, "ECLIPSED", 10);
+            strncpy(dst, "ECLIPSED+", 10 + 1);
             break;
         case Kind::VANILLA:
-            strncpy(dst, "VANILLA", 8);
+            strncpy(dst, "VANILLA+", 8 + 1);
             break;
         }
     }
 
-    void load(JSUMemoryInputStream &in) override {
-        int x;
-        in.read((u8 *)(&x) + 3, 1);
-        if (x < REGULAR || x > VANILLA)
-            x = REGULAR;  // Reset value if corrupt
-        setInt(x);
-    }
-
-    void save(JSUMemoryOutputStream &out) override { out.write((u8 *)(&mDarknessValue) + 3, 1); }
-
 private:
-    int mDarknessValue = ECLIPSED;
+    int mDarknessValue = REGULAR;
 };
 
 class SpeedrunSetting final : public Settings::IntSetting {
