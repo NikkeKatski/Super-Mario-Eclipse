@@ -40,49 +40,37 @@ extern BugsExploitsSetting gBugsSetting;
 extern MirrorModeFlag gMirrorModeSetting;
 extern DarknessSetting gDarknessSetting;
 extern Settings::SwitchSetting gLivesSetting;
+extern Settings::SwitchSetting gFluddCheatSetting;
 extern Settings::SwitchSetting gSkipMovieSetting;
 extern Settings::SwitchSetting gKillSetting;
 extern SpeedrunSetting gSpeedrunSetting;
 
 
+static bool fluddEnabled = true;
 // EVIL CODING SECTION
-u8 elemGetVoiceStatus(TMario *player) {
-    u8 mVoice;
-    bool bYoshi = player->onYoshi();
-    u8 voiceID;
-    PowerPC::writeU32((u32 *)0x800137b8, 0x3b660000);
-
-    if (bYoshi == 0) {
-        mVoice = player->_388;
-        if (mVoice == 2) {
-            voiceID = 6;
-        } else if (mVoice == 1) {
-            voiceID = 2;
-        } else {
-            voiceID = 0;
-            if (SME::TGlobals::getCharacterIDFromPlayer(player) == SME::CharacterID::SHADOW_MARIO) {
-                PowerPC::writeU32((u32 *)0x800137b8, 0x3b600002);
-            }
-        }
-    } else {
-        voiceID = 1;
+void fluddCheat(TMario* player, bool cool) {
+    if (gFluddCheatSetting.getBool() == false) {
+        fluddEnabled = true;
+        return;
     }
-    voiceID = mVoice;
-    return voiceID;
-}
 
-void elemStartVoice(TMario *player, u32 param_1) {
-    bool iVar1;
-    u8 VoiceID;
-    iVar1 = player->onYoshi();
-    if (iVar1 == 0) {
-        VoiceID = elemGetVoiceStatus(player);
-        gpMSound->startMarioVoice(param_1, player->mHealth, VoiceID);
+    if (player->mController->mButtons.mFrameInput & TMarioGamePad::DPAD_LEFT) {
+        player->mAttributes.mHasFludd = false;
+        fluddEnabled = false;
+        return;
     }
-    return;
-}
-SMS_PATCH_B(0x8028537c, elemStartVoice);
 
+    if (player->mController->mButtons.mFrameInput & TMarioGamePad::DPAD_RIGHT) {
+        player->mAttributes.mHasFludd = true;
+        fluddEnabled                  = true;
+        return;
+    }
+
+    if (fluddEnabled == false) {
+        player->mAttributes.mHasFludd = false;
+        return;
+    }
+}
 
 
 
@@ -197,7 +185,8 @@ static void initModule() {
     gSettingsGroup.addSetting(&gTutorialSetting);
     gSettingsGroup.addSetting(&gMirrorModeSetting);
     gSettingsGroup.addSetting(&gLivesSetting);
-    gSettingsGroup.addSetting(&gKillSetting);
+    gSettingsGroup.addSetting(&gFluddCheatSetting);  // Fludd Cheat Toggle
+    gSettingsGroup.addSetting(&gKillSetting); //Waterballoon Toggle
     gSettingsGroup.addSetting(&gDarknessSetting);
     gSettingsGroup.addSetting(&gSkipMovieSetting);
     gSettingsGroup.addSetting(&gSpeedrunSetting);
@@ -260,6 +249,7 @@ static void initModule() {
     Stage::addUpdateCallback(checkForCruiserUnlocked);
     Stage::addUpdateCallback(updateWarpStatesForCruiserCabin);
     Player::addUpdateCallback(forcePlayerZOn2D);
+    Player::addUpdateCallback(fluddCheat);
 
     Stage::addInitCallback(resetFixedCameraOnLoad);
 

@@ -232,7 +232,7 @@ bool isGameCompletedPrior() { return true; } //gBugsSetting.isUnlocked()
 
 void lockModuleSettings(TApplication *app) {
     optional<ModuleInfo> engine_module   = BetterSMS::getModuleInfo("Better Sunshine Engine");
-    optional<ModuleInfo> movement_module = BetterSMS::getModuleInfo("Better Sunshine Moveset");
+    optional<ModuleInfo> movement_module = BetterSMS::getModuleInfo("Better Sunshine Moveset+");
 
     SMS_ASSERT(movement_module,
                "Super Mario Eclipse+ requires the Better Sunshine Movement module to be present and "
@@ -362,7 +362,7 @@ void unlockSettings(TMarDirector *director) {
         gBugsSetting.unlock();
 
         if (optional<ModuleInfo> movement_module =
-                BetterSMS::getModuleInfo("Better Sunshine Moveset")) {
+                BetterSMS::getModuleInfo("Better Sunshine Moveset+")) {
             Settings::SettingsGroup *movement_settings = movement_module->mSettings;
 
             {

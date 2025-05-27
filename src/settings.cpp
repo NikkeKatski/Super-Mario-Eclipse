@@ -8,13 +8,16 @@ DarknessSetting gDarknessSetting;
 SpeedrunSetting gSpeedrunSetting;
 
 static bool sLivesValue = false;
-Settings::SwitchSetting gLivesSetting("Infinite Lives", &sLivesValue);
+Settings::SwitchSetting gLivesSetting("Infinite Lives+", &sLivesValue);
+
+static bool sFluddCheat = false;
+Settings::SwitchSetting gFluddCheatSetting("DPAD FLUDD Cheat+", &sFluddCheat);
 
 static bool sMovieValue = false;
-Settings::SwitchSetting gSkipMovieSetting("Skippable Movies", &sMovieValue);
+Settings::SwitchSetting gSkipMovieSetting("Skippable Movies+", &sMovieValue);
 
 static bool sKillYourself = true;
-Settings::SwitchSetting gKillSetting("Mario & Luigi Water Balloons", &sKillYourself);
+Settings::SwitchSetting gKillSetting("Mario & Luigi Water Balloons-", &sKillYourself);
 
 Settings::SettingsGroup gSettingsGroup(1, 1, Settings::Priority::GAME);
 

@@ -33,10 +33,17 @@ void SoundSESystem_startSoundActorInner(u32 soundId, JAISound **sound, JAIActor 
 SMS_PATCH_BL(SMS_PORT_REGION(0x80013dd4, 0, 0, 0), SoundSESystem_startSoundActorInner);
 
 u32 playerVoiceProcess(TMario *player, MSound *sound, u32 soundID, s16 health, u8 status) {
+
+    PowerPC::writeU32((u32 *)0x800137b8, 0x3b660000);  // EVIL CODING SECTION
+
     // Check for main player
     if (player->_388 == 0) {
         SME::CharacterID player_id = SME::TGlobals::getCharacterIDFromPlayer(player);
-        if (player_id == SME::CharacterID::MARIO) {
+
+        if (player_id == SME::CharacterID::SHADOW_MARIO)
+            PowerPC::writeU32((u32 *)0x800137b8, 0x3b600002);
+
+        if ((player_id == SME::CharacterID::MARIO) || player_id == SME::CharacterID::SHADOW_MARIO) {
             health = 8;
             switch (soundID) {
             case MSD_SE_MV41_JUMP_T_01: {
